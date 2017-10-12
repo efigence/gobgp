@@ -36,7 +36,7 @@ func injectMrt(filename string, count int, skip int, onlyBest bool) error {
 
 	idx := 0
 
-	ch := make(chan []*table.Path, 1<<20)
+	ch := make(chan []*table.Path, 1280)
 
 	go func() {
 
