@@ -141,12 +141,20 @@ func injectMrt(filename string, count int, skip int, onlyBest bool) error {
 	for paths := range ch {
 		err = stream.Send(paths...)
 		if err != nil {
-			return fmt.Errorf("failed to send: %s", err)
+			stream.Close()
+			stream, err = client.AddPathByStream()
+			if err != nil {
+				return fmt.Errorf("[retry]failed to modpath: %s", err)
+			} else {
+				if err != nil {
+					return fmt.Errorf("failed to send, error during sending path [%+v]: %s", paths, err)
+				}
+			}
 		}
 	}
 
 	if err := stream.Close(); err != nil {
-		return fmt.Errorf("failed to send: %s", err)
+		return fmt.Errorf("failed to send, stream closed: %s", err)
 	}
 	return nil
 }
